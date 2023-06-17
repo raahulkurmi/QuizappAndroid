@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Quizapp</string>
+    <string name="enter_your_email">Enter your Email</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="enter_your_age">Enter your age</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="sign_up">Sign up</string>
+    <string name="todo">TODO</string>
+    <string name="sign_up1">Sign up</string>
+    <string name="design_by_n_rahul">Design by \n Rahul</string>
+    <string name="nice_to_meet_you_let_s_make_nyour_knowledge_great">Nice to meet you! Let\'s make \nyour knowledge great</string>
+    <string name="todo1">TODO</string>
+    <string name="welcome">Welcome</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile">Profile</string>
+    <string name="history">History</string>
+    <string name="spin">Spin</string>
+    <string name="home">Home</string>
+    <string name="textview">TextView</string>
+    <string name="textview1">TextView</string>
+    <string name="todo2">TODO</string>
+    <string name="todo5">TODO</string>
+    <string name="textview6">Textview</string>
+    <string name="todo7">TODO</string>
+    <string name="todo11">TODO</string>
+    <string name="what_is_your_name">What Is your Name</string>
+    <string name="select_one_of_these">Select One of these</string>
+    <string name="question">Question</string>
+    <string name="option_1">Option 1</string>
+    <string name="option_2">Option 2</string>
+    <string name="option_3">Option 3</string>
+    <string name="option_4">Option 4</string>
+    <string name="next_option">Next Option</string>
+</resources>

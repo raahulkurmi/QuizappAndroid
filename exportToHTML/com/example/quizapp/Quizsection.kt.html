@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>Quizsection.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Quizsection.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.quizapp</span>
+
+<span class="s1">import androidx.appcompat.app.AppCompatActivity</span>
+<span class="s1">import android.os.Bundle</span>
+<span class="s1">import android.view.View</span>
+<span class="s1">import android.widget.Toast</span>
+<span class="s1">import com.example.quizapp.Fragment.withdrawalfragment</span>
+<span class="s1">import com.example.quizapp.databinding.ActivityQuizsectionBinding</span>
+<span class="s1">import com.example.quizapp.modelclass.questionmodelclass</span>
+<span class="s1">import com.example.quizapp.modelclass.signupmodelclass</span>
+<span class="s1">import com.google.android.material.bottomsheet.BottomSheetDialogFragment</span>
+<span class="s1">import com.google.firebase.auth.ktx.auth</span>
+<span class="s1">import com.google.firebase.database.DataSnapshot</span>
+<span class="s1">import com.google.firebase.database.DatabaseError</span>
+<span class="s1">import com.google.firebase.database.ValueEventListener</span>
+<span class="s1">import com.google.firebase.database.ktx.database</span>
+<span class="s1">import com.google.firebase.database.ktx.getValue</span>
+<span class="s1">import com.google.firebase.firestore.ktx.firestore</span>
+<span class="s1">import com.google.firebase.firestore.ktx.toObject</span>
+<span class="s1">import com.google.firebase.ktx.Firebase</span>
+
+<span class="s0">class </span><span class="s1">Quizsection : AppCompatActivity() {</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">binding by lazy {</span>
+        <span class="s1">ActivityQuizsectionBinding.inflate(layoutInflater)</span>
+    <span class="s1">}</span>
+    <span class="s0">var </span><span class="s1">chances =</span><span class="s2">0L</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">questionlist :ArrayList&lt;questionmodelclass&gt;</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">currentposition=</span><span class="s2">0</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">score=</span><span class="s2">0</span>
+
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate(savedInstanceState: Bundle?) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span>
+        <span class="s1">setContentView(binding.root)</span>
+
+        <span class="s1">Firebase.database.reference.child(</span><span class="s3">&quot;Playchance&quot;</span><span class="s1">).</span>
+        <span class="s1">child(Firebase.auth.currentUser!!.uid).addValueEventListener(</span><span class="s0">object</span><span class="s1">:ValueEventListener{</span>
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onDataChange(snapshot: DataSnapshot) {</span>
+                <span class="s0">val </span><span class="s1">value = snapshot.value</span>
+                <span class="s0">if </span><span class="s1">(value </span><span class="s0">is </span><span class="s1">Long) {</span>
+                    <span class="s1">chances = value</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCancelled(error: DatabaseError) {</span>
+                <span class="s1">TODO(</span><span class="s3">&quot;Not yet implemented&quot;</span><span class="s1">)</span>
+            <span class="s1">}</span>
+
+        <span class="s1">})</span>
+
+
+
+        <span class="s1">questionlist=ArrayList&lt;questionmodelclass&gt;()</span>
+        <span class="s0">var </span><span class="s1">image = intent.getIntExtra(</span><span class="s3">&quot;imageView7&quot;</span><span class="s0">, </span><span class="s2">0</span><span class="s1">)</span>
+        <span class="s1">binding.imageView7.setImageResource(image)</span>
+        <span class="s0">var </span><span class="s1">cattext = intent.getStringExtra(</span><span class="s3">&quot;questiontype&quot;</span><span class="s1">)</span>
+
+        <span class="s1">Firebase.firestore.collection(</span><span class="s3">&quot;question&quot;</span><span class="s1">).document(cattext.toString()).</span>
+        <span class="s1">collection(</span><span class="s3">&quot;question1&quot;</span><span class="s1">).get().</span>
+        <span class="s1">addOnSuccessListener { dataquestion -&gt;</span>
+            <span class="s1">questionlist.clear()</span>
+            <span class="s0">for </span><span class="s1">(question </span><span class="s0">in </span><span class="s1">dataquestion.documents) {</span>
+
+                    <span class="s0">var </span><span class="s1">questionlists = question.toObject(questionmodelclass::</span><span class="s0">class</span><span class="s1">.java)</span>
+                    <span class="s1">questionlist.add(questionlists!!)</span>
+
+
+            <span class="s1">}</span>
+            <span class="s0">if</span><span class="s1">(questionlist.size&gt;</span><span class="s2">0</span><span class="s1">) {</span>
+                <span class="s1">binding.textView14.text = questionlist.get(currentposition).question</span>
+                <span class="s1">binding.button3.text = questionlist.get(currentposition).option1</span>
+                <span class="s1">binding.button4.text = questionlist.get(currentposition).option2</span>
+                <span class="s1">binding.button5.text = questionlist.get(currentposition).option3</span>
+                <span class="s1">binding.button6.text = questionlist.get(currentposition).option4</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+        <span class="s1">binding.imageView4.setOnClickListener {</span>
+            <span class="s0">var </span><span class="s1">bottomsheetdialog: BottomSheetDialogFragment = withdrawalfragment()</span>
+            <span class="s1">bottomsheetdialog.show(</span><span class="s0">this</span><span class="s1">@Quizsection.supportFragmentManager</span><span class="s0">, </span><span class="s3">&quot;test&quot;</span><span class="s1">)</span>
+            <span class="s1">bottomsheetdialog.enterTransition</span>
+        <span class="s1">}</span>
+        <span class="s1">binding.textView6.setOnClickListener {</span>
+            <span class="s0">var </span><span class="s1">bottomsheetdialog: BottomSheetDialogFragment = withdrawalfragment()</span>
+            <span class="s1">bottomsheetdialog.show(</span><span class="s0">this</span><span class="s1">@Quizsection.supportFragmentManager</span><span class="s0">, </span><span class="s3">&quot;test&quot;</span><span class="s1">)</span>
+            <span class="s1">bottomsheetdialog.enterTransition</span>
+        <span class="s1">}</span>
+        <span class="s1">binding.button3.setOnClickListener {</span>
+            <span class="s1">currentquestion(binding.button3.text.toString())</span>
+        <span class="s1">}</span>
+        <span class="s1">binding.button4.setOnClickListener {</span>
+            <span class="s1">currentquestion(binding.button4.text.toString())</span>
+        <span class="s1">}</span>
+        <span class="s1">binding.button5.setOnClickListener {</span>
+            <span class="s1">currentquestion(binding.button5.text.toString())</span>
+        <span class="s1">}</span>
+        <span class="s1">binding.button6.setOnClickListener {</span>
+            <span class="s1">currentquestion(binding.button6.text.toString())</span>
+        <span class="s1">}</span>
+
+
+
+    <span class="s1">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">currentquestion(S:String) {</span>
+
+        <span class="s0">if</span><span class="s1">(S.equals(questionlist.get(currentposition).ans)){</span>
+            <span class="s1">score+=</span><span class="s2">20</span>
+        <span class="s1">}</span>
+        <span class="s1">currentposition++</span>
+        <span class="s0">if</span><span class="s1">(currentposition&gt;=questionlist.size){</span>
+
+            <span class="s0">if</span><span class="s1">((score/questionlist.size*</span><span class="s2">20</span><span class="s1">)*</span><span class="s2">100</span><span class="s1">&gt;=</span><span class="s2">60</span><span class="s1">) {</span>
+                <span class="s1">binding.winner.visibility = View.VISIBLE</span>
+
+                <span class="s1">chances++</span>
+
+                <span class="s1">Firebase.database.reference.child(</span><span class="s3">&quot;Playchance&quot;</span><span class="s1">).</span>
+                <span class="s1">child(Firebase.auth.currentUser!!.uid)</span>
+                    <span class="s1">.setValue(chances).addOnSuccessListener {</span>
+                        <span class="s1">Toast.makeText(</span><span class="s0">this</span><span class="s1">@Quizsection</span><span class="s0">,</span><span class="s3">&quot;Your spin chance is &quot; </span><span class="s1">+ chances.toString()</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span>
+                    <span class="s1">}</span>
+
+
+
+            <span class="s1">}</span><span class="s0">else</span>
+            <span class="s1">{</span>
+                <span class="s1">binding.lost.visibility = View.VISIBLE</span>
+            <span class="s1">}</span>
+
+        <span class="s1">}</span><span class="s0">else</span><span class="s1">{</span>
+            <span class="s1">binding.textView14.text = questionlist.get(currentposition).question</span>
+            <span class="s1">binding.button3.text = questionlist.get(currentposition).option1</span>
+            <span class="s1">binding.button4.text = questionlist.get(currentposition).option2</span>
+            <span class="s1">binding.button5.text = questionlist.get(currentposition).option3</span>
+            <span class="s1">binding.button6.text = questionlist.get(currentposition).option4</span>
+        <span class="s1">}</span>
+
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
